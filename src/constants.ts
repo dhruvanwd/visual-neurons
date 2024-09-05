@@ -1,4 +1,17 @@
-const zero: number[][] = [
+import { Layer } from "./types";
+
+const sample: Layer = [
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+];
+
+const zero: Layer = [
   [0, 0, 1, 1, 1, 1, 0, 0],
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 1, 1, 0, 0, 1, 1, 0],
@@ -9,7 +22,7 @@ const zero: number[][] = [
   [0, 0, 1, 1, 1, 1, 0, 0],
 ];
 
-const one: number[][] = [
+const one: Layer = [
   [0, 0, 0, 1, 1, 0, 0, 0],
   [0, 0, 1, 1, 1, 0, 0, 0],
   [0, 0, 0, 1, 1, 0, 0, 0],
@@ -20,7 +33,7 @@ const one: number[][] = [
   [0, 0, 1, 1, 1, 1, 0, 0],
 ];
 
-const two: number[][] = [
+const two: Layer = [
   [0, 0, 1, 1, 1, 1, 0, 0],
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 1, 1, 0, 0, 1, 1, 0],
@@ -31,7 +44,7 @@ const two: number[][] = [
   [0, 1, 1, 1, 1, 1, 1, 0],
 ];
 
-const three: number[][] = [
+const three: Layer = [
   [0, 0, 1, 1, 1, 1, 0, 0],
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 1, 1, 0, 0, 1, 1, 0],
@@ -42,7 +55,7 @@ const three: number[][] = [
   [0, 0, 1, 1, 1, 1, 0, 0],
 ];
 
-const four: number[][] = [
+const four: Layer = [
   [0, 0, 0, 0, 1, 1, 0, 0],
   [0, 0, 0, 1, 1, 1, 0, 0],
   [0, 0, 1, 1, 1, 1, 0, 0],
@@ -53,7 +66,7 @@ const four: number[][] = [
   [0, 0, 0, 0, 1, 1, 0, 0],
 ];
 
-const five: number[][] = [
+const five: Layer = [
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 1, 1, 0, 0, 0, 0, 0],
@@ -64,7 +77,7 @@ const five: number[][] = [
   [0, 0, 1, 1, 1, 1, 0, 0],
 ];
 
-const six: number[][] = [
+const six: Layer = [
   [0, 0, 1, 1, 1, 1, 0, 0],
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 1, 1, 0, 0, 0, 0, 0],
@@ -75,7 +88,7 @@ const six: number[][] = [
   [0, 0, 1, 1, 1, 1, 0, 0],
 ];
 
-const seven: number[][] = [
+const seven: Layer = [
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 0, 0, 0, 0, 1, 1, 0],
@@ -86,7 +99,7 @@ const seven: number[][] = [
   [0, 0, 1, 1, 0, 0, 0, 0],
 ];
 
-const eight: number[][] = [
+const eight: Layer = [
   [0, 0, 1, 1, 1, 1, 0, 0],
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 1, 1, 0, 0, 1, 1, 0],
@@ -97,7 +110,7 @@ const eight: number[][] = [
   [0, 0, 1, 1, 1, 1, 0, 0],
 ];
 
-const nine: number[][] = [
+const nine: Layer = [
   [0, 0, 1, 1, 1, 1, 0, 0],
   [0, 1, 1, 1, 1, 1, 1, 0],
   [0, 1, 1, 0, 0, 1, 1, 0],
@@ -108,7 +121,10 @@ const nine: number[][] = [
   [0, 0, 1, 1, 1, 1, 0, 0],
 ];
 
-export const data: any = {
+export const data: {
+  [key: string | number]: Layer;
+} = {
+  sample,
   0: zero,
   1: one,
   2: two,
@@ -120,4 +136,3 @@ export const data: any = {
   8: eight,
   9: nine,
 };
-

@@ -1,13 +1,12 @@
-import './App.css';
-import { data } from './constants';
-import NeuralNetwork from './NeuralNetwork';
+import "./App.css";
+import { data } from "./constants";
+import NeuralNetwork from "./NeuralNetwork";
 
 function App() {
-  const keys = Object.keys(data);
   return (
     <div>
       <h1>Neural Network Visualization</h1>
-      {keys.map((key) => (
+      {Object.keys(data).map((key) => (
         <NeuralNetwork
           key={key}
           name={key}

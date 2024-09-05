@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Layer, Neuron } from './types';
+import React, { useMemo } from "react";
+import { Layer } from "./types";
+import { generateLayers } from "./utils";
 
 interface NeuralNetworkProps {
-  input: number[][];
+  input: Layer;
   inputLayerSize: number;
   maxConnections: number;
   name: string;
@@ -10,85 +11,70 @@ interface NeuralNetworkProps {
 
 const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   input,
-  inputLayerSize,
   maxConnections,
   name,
 }) => {
-  const [layers, setLayers] = useState<Layer[]>([]);
+  const layers = useMemo(
+    () => generateLayers(input, maxConnections),
+    [input, maxConnections]
+  );
 
-  const createLayers = useCallback((digits: number[][]) => {
-    const initialLayer: Neuron[] = digits.flat().map((value, index) => ({
-      id: `0-${index}`,
-      active: value === 1,
-    }));
-
-    const generatedLayers: Layer[] = [initialLayer];
-
-    while (generatedLayers[generatedLayers.length - 1].length > 1) {
-      const lastLayer = generatedLayers[generatedLayers.length - 1];
-      const currentLayer: Neuron[] = [];
-
-      for (let i = 0; i < Math.floor(lastLayer.length / 2); i++) {
-        const startIndex = i * 2;
-        const connectedNeurons = lastLayer.slice(
-          startIndex,
-          startIndex + maxConnections
-        );
-        const activeCount = connectedNeurons.filter(
-          (neuron) => neuron.active
-        ).length;
-        const isActive = activeCount >= Math.ceil(maxConnections / 2);
-
-        currentLayer.push({
-          id: `${generatedLayers.length}-${i}`,
-          active: isActive,
-        });
-      }
-
-      generatedLayers.push(currentLayer);
-    }
-
-    setLayers(generatedLayers);
-  }, [maxConnections]);
-
-  useEffect(() => {
-    createLayers(input);
-  }, [input, inputLayerSize, maxConnections]);
-
-  console.log({ [name]: layers });
-
-  const nodeRadius = 15;
+  const nodeRadius = 10;
   const layerHeight = 150;
   const initialYOffset = 50;
-  const svgWidth = 2400;
+  const svgWidth = 1600;
   const svgHeight = layers.length * layerHeight + initialYOffset;
-
-  // New constants for sine wave graphs
-  const graphWidth = svgWidth;
-  const graphHeight = 100;
   const graphSpacing = 20;
 
-  // Function to generate points for sine wave
-  const generateSineWave = (layer: Neuron[], width: number, height: number) => {
-    return layer.map((node, index) => {
-      const x = (width / (layer.length - 1)) * index;
-      const y = height / 2 + (node.active ? -height / 4 : height / 4);
-      return `${x},${y}`;
-    }).join(' ');
+  const colors = useMemo(
+    () => [
+      "#FF00FF", // Magenta
+      "#00FFFF", // Cyan
+      "#FFFF00", // Yellow
+      "#FF0000", // Red
+      "#00FF00", // Lime
+      "#0000FF", // Blue
+      "#FFA500", // Orange
+      "#8A2BE2", // Blue Violet
+      "#00FF7F", // Spring Green
+      "#1E90FF", // Dodger Blue
+    ],
+    []
+  );
+
+  const getNodeConnections = (layerIndex: number, nodeIndex: number) => {
+    if (layerIndex === 0) return [];
+    const prevLayer = layers[layerIndex - 1];
+    const frame = prevLayer.slice(
+      nodeIndex * 2,
+      nodeIndex * 2 + maxConnections
+    );
+    return Array.from(
+      frame,
+      (_, i) => nodeIndex * Math.ceil(maxConnections / 2) + i
+    );
+  };
+
+  const getNodeX = (layerIndex: number, nodeIndex: number) => {
+    const layerSize = layers[layerIndex].length;
+    return (
+      graphSpacing +
+      ((svgWidth - 2 * graphSpacing) * (nodeIndex + 1)) / (layerSize + 1)
+    );
   };
 
   return (
-    <div>
-      <h2 style={{ fontSize: 42, color: 'purple', textAlign: 'left' }}>
+    <div style={{ backgroundColor: "black", padding: "20px" }}>
+      <h2 style={{ fontSize: 42, color: "purple", textAlign: "left" }}>
         Showing neural network of {name}
       </h2>
       <svg
         width={svgWidth}
-        height={layers.length * layerHeight + initialYOffset+ svgHeight + graphSpacing}
+        height={svgHeight + graphSpacing}
         strokeWidth={1}
         style={{
-          border: '1px solid gray',
-          boxSizing: 'content-box',
+          border: "1px solid gray",
+          boxSizing: "content-box",
           marginRight: 42,
           marginBottom: 42,
         }}
@@ -96,78 +82,52 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         {layers.map((layer, layerIndex) => (
           <g
             key={layerIndex}
-            transform={`translate(0, ${layerIndex * layerHeight + initialYOffset})`}
+            fill="white"
+            stroke="green"
+            strokeWidth="1"
+            width={svgWidth - 90}
+            transform={`translate(0, ${
+              layerIndex * layerHeight + initialYOffset
+            })`}
           >
-            {layer.map((node, nodeIndex) => {
-              const y = layerHeight / 2;
-              const x =
-                layerIndex === 0
-                  ? (svgWidth / layer.length) * (nodeIndex + 0.5)
-                  : (svgWidth / (layer.length + 1)) * (nodeIndex + 1);
-
-              return (
-                <g key={node.id}>
-                  {layerIndex < layers.length - 1 &&
-                    layers[layerIndex + 1].map((targetNode, targetIndex) => {
-                      const connectionsPerNode = Math.ceil(maxConnections / 2);
-                      const startIndex = Math.max(0, targetIndex * 2 - connectionsPerNode + 1);
-                      const endIndex = Math.min(layer.length - 1, startIndex + maxConnections - 1);
-
-                      if (nodeIndex >= startIndex && nodeIndex <= endIndex) {
-                        const targetX =
-                          (svgWidth / (layers[layerIndex + 1].length + 1)) * (targetIndex + 1);
-                        const targetY = layerHeight + y;
-                        return (
-                          <line
-                            key={`${node.id}-${targetNode.id}`}
-                            x1={x}
-                            y1={y}
-                            x2={targetX}
-                            y2={targetY - layerHeight / 10}
-                            stroke="black"
-                            strokeWidth="1"
-                          />
-                        );
-                      }
-                      return null;
-                    })}
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r={nodeRadius}
-                    fill={node.active ? 'blue' : 'gray'}
-                  />
-                  <text
-                    x={x}
-                    y={y + 4}
-                    textAnchor="middle"
-                    fontSize="10"
-                    fill="white"
-                  >
-                    {nodeIndex}
-                  </text>
-
-
-                </g>
-              );
-            })}
+            {layer.map((layerItem, idx) => (
+              <React.Fragment key={idx}>
+                {/* Draw connections */}
+                {layerIndex > 0 &&
+                  getNodeConnections(layerIndex, idx).map((prevIdx) => (
+                    <line
+                      key={`${layerIndex}-${idx}-${prevIdx}`}
+                      x1={getNodeX(layerIndex - 1, prevIdx)}
+                      y1={-layerHeight}
+                      x2={getNodeX(layerIndex, idx)}
+                      y2={0}
+                      stroke={colors[idx]}
+                      strokeWidth={0.5}
+                      opacity={0.6}
+                    />
+                  ))}
+                {/* Draw nodes */}
+                <circle
+                  r={nodeRadius}
+                  cx={getNodeX(layerIndex, idx)}
+                  cy={0}
+                  fill={layerItem ? "blue" : "white"}
+                />
+                <text
+                  x={getNodeX(layerIndex, idx)}
+                  y={1}
+                  fontSize={6}
+                  letterSpacing={1}
+                  fill={layerItem ? "yellow" : "black"}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                >
+                  {idx + 1}
+                </text>
+              </React.Fragment>
+            ))}
           </g>
         ))}
-
-        <g transform={`translate(0, ${svgHeight + graphSpacing})`}>
-          {layers.map((layer, index) => (
-            <g key={`graph-${index}`} transform={`translate(0, ${index * (graphHeight + graphSpacing)})`}>
-              <text x="10" y="20" fill="black" fontSize="16">Layer {index}</text>
-              <polyline
-                points={generateSineWave(layer, graphWidth, graphHeight)}
-                fill="none"
-                stroke="blue"
-                strokeWidth="2"
-              />
-              <line x1="0" y1={graphHeight / 2} x2={graphWidth} y2={graphHeight / 2} stroke="gray" strokeWidth="1" />
-            </g>
-          ))}
-        </g>
       </svg>
     </div>
   );
