@@ -9,26 +9,27 @@ interface NeuralNetworkProps {
   name: string;
 }
 
+const nodeRadius = 10;
+const layerHeight = 150;
+const initialYOffset = 50;
+const svgWidth = 1600;
+
+
 const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   input,
   maxConnections,
   name,
 }) => {
-  const layers = useMemo(
-    () => generateLayers(input, maxConnections),
-    [input, maxConnections]
-  );
+  const { layers, connections } = useMemo(() => {
+    const layers = generateLayers(input, maxConnections);
+    const connections = genConnections(layers, maxConnections);
+    return {
+      layers,
+      connections,
+    };
+  }, [input, maxConnections]);
 
-  const nodeRadius = 10;
-  const layerHeight = 150;
-  const initialYOffset = 50;
-  const svgWidth = 1600;
   const svgHeight = layers.length * layerHeight + initialYOffset;
-
-  const connections = useMemo(
-    () => genConnections(layers, maxConnections),
-    [layers, maxConnections]
-  );
 
   console.log("connections", connections);
 
