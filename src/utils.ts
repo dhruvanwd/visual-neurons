@@ -29,17 +29,38 @@ export function generateLayers(data: Layer, connections: number): Layer {
   return layers;
 }
 
-// // Function to generate points for sine wave
-// export const generateSineWave = (
-//   layer: Layer,
-//   width: number,
-//   height: number
-// ) => {
-//   return layer
-//     .map((node, index) => {
-//       const x = (width / (layer.length - 1)) * index;
-//       const y = height / 2 + (node ? -height / 4 : height / 4);
-//       return `${x},${y}`;
-//     })
-//     .join(" ");
-// };
+export const genConnections = (layers: number[][], maxConnections: number) => {
+  const allConnections: number[][][] = [];
+  for (let layerIndex = 1; layerIndex < layers.length; layerIndex++) {
+    const currentLayer = layers[layerIndex];
+    const prevLayer = layers[layerIndex - 1];
+    const layerConnections: number[][] = [];
+
+    for (let nodeIndex = 0; nodeIndex < currentLayer.length; nodeIndex++) {
+      const startIndex = nodeIndex * Math.ceil(maxConnections / 2);
+      const endIndex = Math.min(startIndex + maxConnections, prevLayer.length);
+
+      const nodeConnections = Array.from(
+        { length: endIndex - startIndex },
+        (_, i) => startIndex + i
+      );
+      layerConnections.push(nodeConnections);
+    }
+
+    allConnections.push(layerConnections);
+  }
+  return allConnections;
+};
+
+export const colors = [
+  "#FF00FF",
+  "#00FFFF",
+  "#FFFF00",
+  "#FF0000",
+  "#00FF00",
+  "#0000FF",
+  "#FFA500",
+  "#8A2BE2",
+  "#00FF7F",
+  "#1E90FF",
+];

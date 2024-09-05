@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Layer } from "./types";
-import { generateLayers } from "./utils";
+import { colors, genConnections, generateLayers } from "./utils";
 
 interface NeuralNetworkProps {
   input: Layer;
@@ -25,47 +25,10 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   const svgWidth = 1600;
   const svgHeight = layers.length * layerHeight + initialYOffset;
 
-  const colors = useMemo(
-    () => [
-      "#FF00FF",
-      "#00FFFF",
-      "#FFFF00",
-      "#FF0000",
-      "#00FF00",
-      "#0000FF",
-      "#FFA500",
-      "#8A2BE2",
-      "#00FF7F",
-      "#1E90FF",
-    ],
-    []
+  const connections = useMemo(
+    () => genConnections(layers, maxConnections),
+    [layers, maxConnections]
   );
-
-  const connections = useMemo(() => {
-    const allConnections: number[][][] = [];
-    for (let layerIndex = 1; layerIndex < layers.length; layerIndex++) {
-      const currentLayer = layers[layerIndex];
-      const prevLayer = layers[layerIndex - 1];
-      const layerConnections: number[][] = [];
-
-      for (let nodeIndex = 0; nodeIndex < currentLayer.length; nodeIndex++) {
-        const startIndex = nodeIndex * Math.ceil(maxConnections / 2);
-        const endIndex = Math.min(
-          startIndex + maxConnections,
-          prevLayer.length
-        );
-
-        const nodeConnections = Array.from(
-          { length: endIndex - startIndex },
-          (_, i) => startIndex + i
-        );
-        layerConnections.push(nodeConnections);
-      }
-
-      allConnections.push(layerConnections);
-    }
-    return allConnections;
-  }, [layers, maxConnections]);
 
   console.log("connections", connections);
 
