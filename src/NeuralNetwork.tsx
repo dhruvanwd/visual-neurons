@@ -24,43 +24,54 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   const initialYOffset = 50;
   const svgWidth = 1600;
   const svgHeight = layers.length * layerHeight + initialYOffset;
-  const graphSpacing = 20;
 
   const colors = useMemo(
     () => [
-      "#FF00FF", // Magenta
-      "#00FFFF", // Cyan
-      "#FFFF00", // Yellow
-      "#FF0000", // Red
-      "#00FF00", // Lime
-      "#0000FF", // Blue
-      "#FFA500", // Orange
-      "#8A2BE2", // Blue Violet
-      "#00FF7F", // Spring Green
-      "#1E90FF", // Dodger Blue
+      "#FF00FF",
+      "#00FFFF",
+      "#FFFF00",
+      "#FF0000",
+      "#00FF00",
+      "#0000FF",
+      "#FFA500",
+      "#8A2BE2",
+      "#00FF7F",
+      "#1E90FF",
     ],
     []
   );
 
-  const getNodeConnections = (layerIndex: number, nodeIndex: number) => {
-    if (layerIndex === 0) return [];
-    const prevLayer = layers[layerIndex - 1];
-    const frame = prevLayer.slice(
-      nodeIndex * 2,
-      nodeIndex * 2 + maxConnections
-    );
-    return Array.from(
-      frame,
-      (_, i) => nodeIndex * Math.ceil(maxConnections / 2) + i
-    );
-  };
+  const connections = useMemo(() => {
+    const allConnections: number[][][] = [];
+    for (let layerIndex = 1; layerIndex < layers.length; layerIndex++) {
+      const currentLayer = layers[layerIndex];
+      const prevLayer = layers[layerIndex - 1];
+      const layerConnections: number[][] = [];
+
+      for (let nodeIndex = 0; nodeIndex < currentLayer.length; nodeIndex++) {
+        const startIndex = nodeIndex * Math.ceil(maxConnections / 2);
+        const endIndex = Math.min(
+          startIndex + maxConnections,
+          prevLayer.length
+        );
+
+        const nodeConnections = Array.from(
+          { length: endIndex - startIndex },
+          (_, i) => startIndex + i
+        );
+        layerConnections.push(nodeConnections);
+      }
+
+      allConnections.push(layerConnections);
+    }
+    return allConnections;
+  }, [layers, maxConnections]);
+
+  console.log("connections", connections);
 
   const getNodeX = (layerIndex: number, nodeIndex: number) => {
     const layerSize = layers[layerIndex].length;
-    return (
-      graphSpacing +
-      ((svgWidth - 2 * graphSpacing) * (nodeIndex + 1)) / (layerSize + 1)
-    );
+    return (svgWidth * (nodeIndex + 1)) / (layerSize + 1);
   };
 
   return (
@@ -70,7 +81,7 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
       </h2>
       <svg
         width={svgWidth}
-        height={svgHeight + graphSpacing}
+        height={svgHeight}
         strokeWidth={1}
         style={{
           border: "1px solid gray",
@@ -79,34 +90,43 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
           marginBottom: 42,
         }}
       >
+        {connections.map((layerConnections, layerIndex) => (
+          <g
+            key={layerIndex}
+            transform={`translate(0, ${
+              layerIndex * layerHeight + initialYOffset
+            })`}
+          >
+            {layerConnections.map((nodeConnections, nodeIndex) => (
+              <g key={nodeIndex}>
+                {nodeConnections.map((prevNodeIndex, idx) => (
+                  <line
+                    key={idx}
+                    x1={getNodeX(layerIndex, prevNodeIndex)}
+                    y1={0}
+                    x2={getNodeX(layerIndex + 1, nodeIndex)}
+                    y2={layerHeight}
+                    stroke={colors[idx % colors.length]}
+                    strokeWidth={1}
+                  />
+                ))}
+              </g>
+            ))}
+          </g>
+        ))}
         {layers.map((layer, layerIndex) => (
           <g
             key={layerIndex}
             fill="white"
             stroke="green"
             strokeWidth="1"
-            width={svgWidth - 90}
+            width={svgWidth}
             transform={`translate(0, ${
               layerIndex * layerHeight + initialYOffset
             })`}
           >
             {layer.map((layerItem, idx) => (
               <React.Fragment key={idx}>
-                {/* Draw connections */}
-                {layerIndex > 0 &&
-                  getNodeConnections(layerIndex, idx).map((prevIdx) => (
-                    <line
-                      key={`${layerIndex}-${idx}-${prevIdx}`}
-                      x1={getNodeX(layerIndex - 1, prevIdx)}
-                      y1={-layerHeight}
-                      x2={getNodeX(layerIndex, idx)}
-                      y2={0}
-                      stroke={colors[idx]}
-                      strokeWidth={0.5}
-                      opacity={0.6}
-                    />
-                  ))}
-                {/* Draw nodes */}
                 <circle
                   r={nodeRadius}
                   cx={getNodeX(layerIndex, idx)}

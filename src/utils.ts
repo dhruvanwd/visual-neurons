@@ -1,9 +1,6 @@
 import { Layer } from "./types";
 
-export function generateLayers(
-  data: Layer,
-  connections: number
-): Layer {
+export function generateLayers(data: Layer, connections: number): Layer {
   const layers: Layer = [data.flat()];
 
   while (layers[layers.length - 1].length > connections) {
@@ -14,7 +11,13 @@ export function generateLayers(
     console.log(layerSize);
 
     for (let idx = 0; idx < layer.length; idx++) {
-      const currentFrame:number[] = lastLayer.slice(idx * 2, idx * 2 + connections);
+      const currentFrame: number[] = lastLayer.slice(
+        idx * Math.ceil(connections / 2),
+        Math.min(
+          idx * Math.ceil(connections / 2) + connections,
+          lastLayer.length
+        )
+      );
       const isActive =
         currentFrame.filter((x) => x === 1).length >=
         Math.ceil(connections / 2);
