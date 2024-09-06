@@ -43,8 +43,6 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
     <div style={{ backgroundColor: "black", padding: "20px" }}>
       <h2 style={{ fontSize: 32, color: "purple", textAlign: "left" }}>
         Showing neural network of {name} and connections of {maxConnections}{" "}
-        <br />
-        Activation Threshold of {getActivationThreshold(maxConnections)}
       </h2>
       <svg
         width={svgWidth}
@@ -115,6 +113,39 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
             ))}
           </g>
         ))}
+
+        <g>
+          <text
+            x={layerHeight}
+            y={(layerHeight - 2 * nodeRadius) * layers.length}
+            fontSize={12}
+            letterSpacing={1}
+            fill="white"
+            textAnchor="middle"
+            dominantBaseline="middle"
+          >
+            Activation Threshold of {getActivationThreshold(maxConnections)}
+          </text>
+          {layers.map((layer, layerIndex) => (
+            <text
+              x={layerHeight}
+              y={
+                nodeRadius * 2 * layerIndex +
+                (layerHeight - nodeRadius) * layers.length
+              }
+              fontSize={12}
+              letterSpacing={1}
+              fill="white"
+              key={"layer" + layerIndex}
+              height={initialYOffset}
+              textAnchor="middle"
+              dominantBaseline="middle"
+            >
+              Layer: {layerIndex + 1} Nodes: {layer.length} Active Nodes :{" "}
+              {layer.filter((x) => x === 1).length}
+            </text>
+          ))}
+        </g>
       </svg>
     </div>
   );
