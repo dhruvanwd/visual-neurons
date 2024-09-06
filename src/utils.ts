@@ -3,17 +3,13 @@ import { Layer } from "./types";
 export const getActivationThreshold = (connections: number) =>
   Math.ceil(connections / 2);
 
-export const getConnectionThreshold = (connections: number) =>
-  Math.floor(connections / 2);
-
 export function generateLayers(data: Layer, connections: number): Layer {
   const layers: Layer = [data.flat()];
   const activationThreshold = getActivationThreshold(connections);
-  const connectionThresold = getConnectionThreshold(connections);
 
   while (layers[layers.length - 1].length > connections) {
     const lastLayer = layers[layers.length - 1];
-    const layerSize = Math.floor(lastLayer.length / connectionThresold);
+    const layerSize = Math.floor(lastLayer.length / activationThreshold);
     const layer: number[] = new Array(layerSize).fill(0);
 
     console.log(layerSize);
@@ -38,10 +34,10 @@ export const genConnections = (layers: number[][], maxConnections: number) => {
     const currentLayer = layers[layerIndex];
     const prevLayer = layers[layerIndex - 1];
     const layerConnections: number[][] = [];
-    const connectionThresold = getConnectionThreshold(maxConnections);
+    const activationThreshold = getActivationThreshold(maxConnections);
 
     for (let nodeIndex = 0; nodeIndex < currentLayer.length; nodeIndex++) {
-      const startIndex = nodeIndex * connectionThresold;
+      const startIndex = nodeIndex * activationThreshold;
       const endIndex = Math.min(startIndex + maxConnections, prevLayer.length);
 
       const nodeConnections = Array.from(
