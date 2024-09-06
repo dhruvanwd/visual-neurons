@@ -1,5 +1,20 @@
 import { Layer } from "./types";
 
+export const colors = [
+  "#FF00FF",
+  "#00FFFF",
+  "#FFFF00",
+  "#FF0000",
+  "#00FF00",
+  "#0000FF",
+  "#FFA500",
+  "#8A2BE2",
+  "#00FF7F",
+  "#1E90FF",
+  "#FF4500",
+  "#FFD700",
+];
+
 const sample: Layer = [
   [1, 1, 1, 1, 1, 1, 1, 1],
   [1, 1, 1, 1, 1, 1, 1, 1],
@@ -124,15 +139,15 @@ const nine: Layer = [
 export const data: {
   [key: string | number]: Layer;
 } = {
-  // sample,
+  sample,
   0: zero,
-  // 1: one,
-  // 2: two,
-  // 3: three,
-  // 4: four,
-  // 5: five,
-  // 6: six,
-  // 7: seven,
-  // 8: eight,
-  // 9: nine,
+  1: one,
+  2: two,
+  3: three,
+  4: four,
+  5: five,
+  6: six,
+  7: seven,
+  8: eight,
+  9: nine,
 };

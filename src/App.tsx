@@ -11,7 +11,6 @@ function App() {
           key={key}
           name={key}
           input={data[key]}
-          inputLayerSize={64}
           maxConnections={5}
         />
       ))}

@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
 import { Layer } from "./types";
-import { colors, genConnections, generateLayers } from "./utils";
+import { genConnections, generateLayers } from "./utils";
+import { colors } from "./constants";
 
 interface NeuralNetworkProps {
   input: Layer;
-  inputLayerSize: number;
   maxConnections: number;
   name: string;
 }
@@ -13,7 +13,6 @@ const nodeRadius = 10;
 const layerHeight = 150;
 const initialYOffset = 50;
 const svgWidth = 1600;
-
 
 const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   input,
@@ -31,8 +30,6 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
 
   const svgHeight = layers.length * layerHeight + initialYOffset;
 
-  console.log("connections", connections);
-
   const getNodeX = (layerIndex: number, nodeIndex: number) => {
     const layerSize = layers[layerIndex].length;
     return (svgWidth * (nodeIndex + 1)) / (layerSize + 1);
@@ -41,7 +38,7 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   return (
     <div style={{ backgroundColor: "black", padding: "20px" }}>
       <h2 style={{ fontSize: 42, color: "purple", textAlign: "left" }}>
-        Showing neural network of {name}
+        Showing neural network of {name} and connections of {maxConnections}
       </h2>
       <svg
         width={svgWidth}

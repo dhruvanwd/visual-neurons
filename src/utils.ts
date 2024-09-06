@@ -2,28 +2,24 @@ import { Layer } from "./types";
 
 export function generateLayers(data: Layer, connections: number): Layer {
   const layers: Layer = [data.flat()];
+  const activationThreshold = Math.ceil(connections / 2);
 
   while (layers[layers.length - 1].length > connections) {
     const lastLayer = layers[layers.length - 1];
-    const layerSize = Math.floor(lastLayer.length / 3);
+    const layerSize = Math.floor(lastLayer.length / activationThreshold);
     const layer: number[] = new Array(layerSize).fill(0);
 
     console.log(layerSize);
 
     for (let idx = 0; idx < layer.length; idx++) {
       const currentFrame: number[] = lastLayer.slice(
-        idx * Math.ceil(connections / 2),
-        Math.min(
-          idx * Math.ceil(connections / 2) + connections,
-          lastLayer.length
-        )
+        idx * activationThreshold,
+        Math.min(idx * activationThreshold + connections, lastLayer.length)
       );
       const isActive =
-        currentFrame.filter((x) => x === 1).length >=
-        Math.ceil(connections / 2);
+        currentFrame.filter((x) => x === 1).length >= activationThreshold;
       layer[idx] = isActive ? 1 : 0;
     }
-
     layers.push(layer);
   }
   return layers;
@@ -51,16 +47,3 @@ export const genConnections = (layers: number[][], maxConnections: number) => {
   }
   return allConnections;
 };
-
-export const colors = [
-  "#FF00FF",
-  "#00FFFF",
-  "#FFFF00",
-  "#FF0000",
-  "#00FF00",
-  "#0000FF",
-  "#FFA500",
-  "#8A2BE2",
-  "#00FF7F",
-  "#1E90FF",
-];
