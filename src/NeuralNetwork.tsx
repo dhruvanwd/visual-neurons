@@ -40,7 +40,7 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   };
 
   return (
-    <div style={{ backgroundColor: "black", padding: "20px" }}>
+    <div style={{ backgroundColor: "black", padding: 20, marginBottom: 20 }}>
       <h2 style={{ fontSize: 32, color: "purple", textAlign: "left" }}>
         Showing neural network of {name} and connections of {maxConnections}{" "}
       </h2>
