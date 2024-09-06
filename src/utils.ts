@@ -1,8 +1,11 @@
 import { Layer } from "./types";
 
+export const getActivationThreshold = (connections: number) =>
+  Math.ceil(connections / 2);
+
 export function generateLayers(data: Layer, connections: number): Layer {
   const layers: Layer = [data.flat()];
-  const activationThreshold = Math.ceil(connections / 2);
+  const activationThreshold = getActivationThreshold(connections);
 
   while (layers[layers.length - 1].length > connections) {
     const lastLayer = layers[layers.length - 1];

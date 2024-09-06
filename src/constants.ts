@@ -1,18 +1,18 @@
 import { Layer } from "./types";
 
 export const colors = [
-  "#FF00FF",
-  "#00FFFF",
-  "#FFFF00",
-  "#FF0000",
-  "#00FF00",
-  "#0000FF",
-  "#FFA500",
-  "#8A2BE2",
-  "#00FF7F",
-  "#1E90FF",
-  "#FF4500",
-  "#FFD700",
+  "#00FF00", // Lime Green
+  "#FF00FF", // Magenta
+  "#00FFFF", // Cyan
+  "#FFFF00", // Yellow
+  "#FF4500", // Orange Red
+  "#1E90FF", // Dodger Blue
+  "#FF69B4", // Hot Pink
+  "#7FFF00", // Chartreuse
+  "#00FA9A", // Medium Spring Green
+  "#FF1493", // Deep Pink
+  "#FFD700", // Gold
+  "#00CED1", // Dark Turquoise
 ];
 
 const sample: Layer = [

@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
 import { Layer } from "./types";
-import { genConnections, generateLayers } from "./utils";
+import {
+  genConnections,
+  generateLayers,
+  getActivationThreshold,
+} from "./utils";
 import { colors } from "./constants";
 
 interface NeuralNetworkProps {
@@ -37,8 +41,10 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
 
   return (
     <div style={{ backgroundColor: "black", padding: "20px" }}>
-      <h2 style={{ fontSize: 42, color: "purple", textAlign: "left" }}>
-        Showing neural network of {name} and connections of {maxConnections}
+      <h2 style={{ fontSize: 32, color: "purple", textAlign: "left" }}>
+        Showing neural network of {name} and connections of {maxConnections}{" "}
+        <br />
+        Activation Threshold of {getActivationThreshold(maxConnections)}
       </h2>
       <svg
         width={svgWidth}
@@ -68,7 +74,7 @@ const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
                     x2={getNodeX(layerIndex + 1, nodeIndex)}
                     y2={layerHeight}
                     stroke={colors[idx % colors.length]}
-                    strokeWidth={1}
+                    strokeWidth={2}
                   />
                 ))}
               </g>

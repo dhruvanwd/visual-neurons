@@ -5,7 +5,7 @@ import NeuralNetwork from "./NeuralNetwork";
 function App() {
   return (
     <div>
-      <h1>Neural Network Visualization</h1>
+      <h1 style={{ fontSize: 38 }}>Neural Network Visualization</h1>
       {Object.keys(data).map((key) => (
         <NeuralNetwork
           key={key}
